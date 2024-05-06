@@ -1,6 +1,6 @@
 {
   "name": "astro-pages-hmr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "author": "Bjorn Lu",
   "license": "MIT",
@@ -25,6 +25,7 @@
   },
   "keywords": [
     "astro",
+    "astro-integration",
     "hmr"
   ],
   "packageManager": "pnpm@9.0.6",
