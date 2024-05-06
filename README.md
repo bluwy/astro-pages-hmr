@@ -44,7 +44,7 @@ The integration uses [micromorph](https://github.com/natemoo-re/micromorph) to u
 In some cases where it's not safe to morph, it'll fallback to a full page reload instead. The cases include:
 
 - The `<head>` tag has changed
-- The `<scripts>` tags have changed
+- The `<script>` tags have changed
 - The attributes passed to Island components have changed
 
 ## Limitations
