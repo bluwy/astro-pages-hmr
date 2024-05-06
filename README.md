@@ -37,7 +37,7 @@ export default defineConfig({
 })
 ```
 
-### How it works
+## How it works
 
 The integration uses [micromorph](https://github.com/natemoo-re/micromorph) to update the current HTML with the incoming new HTML via `fetch`. `micromorph` is bundled into a client HMR runtime that is injected into the page.
 
@@ -47,7 +47,7 @@ In some cases where it's not safe to morph, it'll fallback to a full page reload
 - The `<scripts>` tags have changed
 - The attributes passed to Island components have changed
 
-### Limitations
+## Limitations
 
 - Dynamically injected elements in the HTML may interfere with morphing as the incoming new HTML will likely not contain that element, so they will be deleted from the DOM even if needed. In which case, make sure your script is able to handle those changes and re-inject them if needed. <!-- Introduce a new event? Borrow View Transition event? -->
 
