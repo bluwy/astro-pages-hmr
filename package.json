@@ -1,0 +1,40 @@
+{
+  "name": "astro-pages-hmr",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "Bjorn Lu",
+  "license": "MIT",
+  "types": "./src/index.d.ts",
+  "exports": "./src/index.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js --watch",
+    "format": "prettier \"**/*.{js,ts,css,md,html,astro}\" --write",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "src",
+    "!src/hmr-runtime.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bluwy/astro-pages-hmr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bluwy/astro-pages-hmr/issues"
+  },
+  "keywords": [
+    "astro",
+    "hmr"
+  ],
+  "packageManager": "pnpm@9.0.6",
+  "devDependencies": {
+    "@types/node": "^20.12.8",
+    "astro": "^4.7.1",
+    "esbuild": "^0.20.2",
+    "micromorph": "^0.4.5",
+    "prettier": "^3.2.5",
+    "prettier-plugin-astro": "^0.13.0",
+    "vite": "^5.2.11"
+  }
+}

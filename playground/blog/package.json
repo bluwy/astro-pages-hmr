@@ -1,0 +1,26 @@
+{
+  "name": "blog",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "devDependencies": {
+    "@astrojs/mdx": "^2.3.1",
+    "@astrojs/preact": "^3.2.0",
+    "@astrojs/rss": "^4.0.5",
+    "@astrojs/sitemap": "^3.1.4",
+    "astro": "^4.7.1",
+    "astro-pages-hmr": "workspace:*",
+    "preact": "^10.21.0"
+  },
+  "dependenciesMeta": {
+    "astro-pages-hmr": {
+      "injected": true
+    }
+  }
+}
