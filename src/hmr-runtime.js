@@ -22,14 +22,6 @@ if (import.meta.hot) {
           p = p || new DOMParser()
           const doc = p.parseFromString(html, 'text/html')
 
-          const oldHead = document.head?.outerHTML
-          const newHead = doc.head?.outerHTML
-          if (oldHead !== newHead) {
-            console.debug('[astro-pages-hmr] reloading (head changed)')
-            location.reload()
-            return
-          }
-
           const diff = micromorph.diff(document, doc)
           const checkResult = isDiffSafe(document.documentElement, diff)
           if (typeof checkResult === 'string') {
@@ -90,6 +82,7 @@ function isDiffSafe(parent, diff, child) {
     case 3: {
       if (!el) return
       const tagName = el.tagName
+      // TODO: Detect script has updated, however, the tag doesn't change so can be tricky to detect
       if (diff.attributes.length && isTagNameUnsafe(tagName)) {
         return `${tagName.toLowerCase()} attribute updated`
       }
@@ -126,14 +119,7 @@ const dynamicallyAddedAstroIslandAttributeNames = [
 ]
 
 /**
- * Before we iterate the `diff.children` (or patches), we find any `astro-island`
- * and try to filter out dynamically changed attributes. Because usually if an attribute
- * change is detected, we reload the page completely, but if only those in
- * `dynamicallyAddedAstroIslandAttributeNames` has changed, we don't need a full refresh.
- *
- * After filtering the attributes, if no other attributes are left, it's likely that
- * the `astro-island` is unchanged, so we remove its patch from `patches` completely
- * by setting it as `undefined`.
+ * Before we iterate the `diff.children` (or patches),
  *
  * @param {any[]} patches
  * @param {HTMLElement} el
@@ -144,6 +130,13 @@ function sanitizeDiffChildren(patches, el) {
     // ACTION_UPDATE
     if (patch && patch.type === 3) {
       const tagName = el.childNodes[i].tagName
+      // We find any `astro-island` and try to filter out dynamically changed attributes. Because usually
+      // if an attribute  change is detected, we reload the page completely, but if only those in
+      // `dynamicallyAddedAstroIslandAttributeNames` has changed, we don't need a full refresh.
+      //
+      // After filtering the attributes, if no other attributes are left, it's likely that
+      // the `astro-island` is unchanged, so we remove its patch from `patches` completely
+      // by setting it as `undefined`.
       if (tagName && patch.attributes.length && tagName === 'ASTRO-ISLAND') {
         patches[i].attributes = patch.attributes.filter(
           (attr) =>
@@ -152,6 +145,40 @@ function sanitizeDiffChildren(patches, el) {
         if (patches[i].attributes.length === 0) {
           patches[i] = undefined
         }
+        continue
+      }
+
+      // For any scripts, we remove the `data-astro-exec` attribute from the patch as it's not relevant
+      // for morphing. It's added by ViewTransition to track already executed scripts only.
+      //
+      // Also check if the src is actually changed, and if not, remove the attribute patch completely. It
+      // might be added by micromorph with a special t=Date.now cache bust, but we want to be safe and reload
+      // the page directly in that case.
+      //
+      // After filtering the attributes, if no other attributes are left, it's likely that
+      // the `script` is unchanged, so we remove its patch from `patches` completely
+      // by setting it as `undefined`.
+      if (tagName && patch.attributes.length && tagName === 'SCRIPT') {
+        const oldDoc = document
+        patches[i].attributes = patch.attributes.filter((attr) => {
+          if (attr.type === 5 && attr.name === 'data-astro-exec') {
+            return false
+          }
+          if (attr.type === 4 && attr.name === 'src') {
+            // Remove timestamp query
+            const src = attr.value
+              .replace(/(\?|&)t=.*?(&|$)/, (_, m1, m2) => (m2 ? m1 : ''))
+              .replace(/\?$/, '') // micromorph may add a trailing &, the above replace would make this ?, so remove it
+            if (oldDoc.querySelector(`script[src="${src}"]`)) {
+              return false
+            }
+          }
+          return true
+        })
+        if (patches[i].attributes.length === 0) {
+          patches[i] = undefined
+        }
+        continue
       }
     }
   }

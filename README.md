@@ -50,6 +50,7 @@ In some cases where it's not safe to morph, it'll fallback to a full page reload
 ## Limitations
 
 - Dynamically injected elements in the HTML may interfere with morphing as the incoming new HTML will likely not contain that element, so they will be deleted from the DOM even if needed. In which case, make sure your script is able to handle those changes and re-inject them if needed. <!-- Introduce a new event? Borrow View Transition event? -->
+- When updating scripts in Astro files, the page may not reload to re-execute the script.
 
 ## License
 
