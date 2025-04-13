@@ -14,7 +14,7 @@
     "@astrojs/preact": "^3.2.0",
     "@astrojs/rss": "^4.0.5",
     "@astrojs/sitemap": "^3.1.4",
-    "astro": "^4.7.1",
+    "astro": "^4.16.18",
     "astro-pages-hmr": "workspace:*",
     "preact": "^10.21.0"
   },
